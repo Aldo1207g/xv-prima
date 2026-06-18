@@ -1,11 +1,165 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Itinerario from '../components/Itinerario.astro';
+import Galeria from '../components/Galeria.astro';
+import Ubicacion from '../components/Ubicacion.astro';
+import RSVP from '../components/RSVP.astro';
 ---
 
 <Layout>
-	<Welcome />
+  <main class="max-w-md mx-auto min-h-screen bg-[#fdfbf7] shadow-2xl overflow-hidden relative">
+    
+    <div class="fixed inset-0 w-full max-w-md mx-auto pointer-events-none z-0 overflow-hidden">
+      
+      <img src="/enredadera-esquina-superior-izq.png" class="absolute top-0 left-0 w-32 h-32 object-contain opacity-90" />
+      <img src="/enredadera-esquina-superior-izq.png" class="absolute top-0 right-0 w-32 h-32 object-contain opacity-90 -scale-x-100" />
+      <img src="/enredadera-esquina-superior-izq.png" class="absolute bottom-0 left-0 w-32 h-32 object-contain opacity-90 -scale-y-100" />
+      <img src="/enredadera-esquina-superior-izq.png" class="absolute bottom-0 right-0 w-32 h-32 object-contain opacity-90 -scale-x-100 -scale-y-100" />
+
+      <div class="absolute inset-y-0 left-0 w-10 flex flex-col justify-evenly py-32 px-1">
+        {[1, 2, 3, 4, 5].map(() => <img src="/bordes.png" class="w-full h-24 object-contain opacity-60" />)}
+      </div>
+      <div class="absolute inset-y-0 right-0 w-10 flex flex-col justify-evenly py-32 px-1 -scale-x-100">
+        {[1, 2, 3, 4, 5].map(() => <img src="/bordes.png" class="w-full h-24 object-contain opacity-60" />)}
+      </div>
+
+      <div class="absolute top-0 inset-x-32 h-12 flex justify-center items-center gap-12 pt-4">
+        {[1, 2].map(() => <img src="/bordes-h.png" class="h-full w-24 object-contain opacity-70" />)}
+      </div>
+      <div class="absolute bottom-0 inset-x-32 h-12 flex justify-center items-center gap-12 pb-4 -scale-y-100">
+        {[1, 2].map(() => <img src="/bordes-h.png" class="h-full w-24 object-contain opacity-70" />)}
+      </div>
+
+    </div>
+
+    <section class="min-h-screen flex flex-col items-center justify-center p-8 text-center relative z-10">
+      
+      <div class="reveal">
+        <span class="text-sm tracking-[0.2em] uppercase mb-4 block text-coquette-dark/70">Estás cordialmente invitado</span>
+        <h1 class="font-serif text-6xl italic text-coquette-dark mb-6 leading-tight">Mis <br>XV Años</h1>
+        <p class="text-xl font-light mb-10">Sábado, 1 de Agosto de 2026</p>
+      </div>
+      
+      <div class="w-full max-w-[300px] shadow-md rounded-2xl reveal relative z-10">
+        <iframe 
+          style="border-radius:12px" 
+          src="https://open.spotify.com/embed/track/0jBBjn0oUN568ohYE3wlLL?utm_source=generator&theme=0" 
+          width="100%" 
+          height="80" 
+          frameBorder="0" 
+          allowfullscreen="" 
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <div class="mt-10 flex gap-3 text-coquette-dark font-serif text-center reveal relative z-10">
+        <div class="bg-white/70 backdrop-blur-md px-3 py-4 rounded-xl w-[4.5rem] shadow-sm border border-coquette-pink/40">
+          <span id="dias" class="text-3xl block font-bold">00</span>
+          <span class="text-[10px] uppercase tracking-widest font-sans mt-1 block">Días</span>
+        </div>
+        <div class="bg-white/70 backdrop-blur-md px-3 py-4 rounded-xl w-[4.5rem] shadow-sm border border-coquette-pink/40">
+          <span id="horas" class="text-3xl block font-bold">00</span>
+          <span class="text-[10px] uppercase tracking-widest font-sans mt-1 block">Hrs</span>
+        </div>
+        <div class="bg-white/70 backdrop-blur-md px-3 py-4 rounded-xl w-[4.5rem] shadow-sm border border-coquette-pink/40">
+          <span id="minutos" class="text-3xl block font-bold">00</span>
+          <span class="text-[10px] uppercase tracking-widest font-sans mt-1 block">Min</span>
+        </div>
+        <div class="bg-white/70 backdrop-blur-md px-3 py-4 rounded-xl w-[4.5rem] shadow-sm border border-coquette-pink/40">
+          <span id="segundos" class="text-3xl block font-bold">00</span>
+          <span class="text-[10px] uppercase tracking-widest font-sans mt-1 block">Seg</span>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="reveal relative z-10">
+      <Itinerario />
+    </div>
+
+    <div class="reveal relative z-10">
+      <Galeria />
+    </div>
+    
+    <div class="reveal relative z-10">
+      <Ubicacion />
+    </div>
+
+    <section class="py-16 px-8 text-center reveal relative z-10">
+      <h2 class="font-serif text-3xl italic mb-4 text-coquette-dark">Mesa de Regalos</h2>
+      <p class="mb-6 font-light">El mejor regalo es tu presencia, pero si deseas tener un detalle conmigo:</p>
+      <a href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51996571" target="_blank" class="inline-block bg-[#c5a059] text-white px-8 py-3 rounded-full font-bold tracking-wide shadow-md hover:bg-[#b08d4a] transition-colors">
+        Ver en Liverpool
+      </a>
+    </section>
+
+    <div class="reveal relative z-10">
+      <RSVP />
+    </div>
+
+  </main>
 </Layout>
+
+<style is:global>
+  /* EL TRUCO MAGICO: Hacemos invisibles los fondos de todas las secciones para no tapar el marco floral */
+  section {
+    background-color: transparent !important;
+  }
+  
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+  }
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<script>
+  // ANIMACIONES FADE-IN
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach((el) => {
+    observer.observe(el);
+  });
+
+  // CONTADOR REGRESIVO
+  const fechaEvento = new Date("August 1, 2026 18:30:00").getTime();
+
+  const actualizarContador = setInterval(function() {
+    const ahora = new Date().getTime();
+    const distancia = fechaEvento - ahora;
+
+    const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+    const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+
+    const elemDias = document.getElementById("dias");
+    if (elemDias) {
+      elemDias.innerText = dias.toString().padStart(2, '0');
+      document.getElementById("horas").innerText = horas.toString().padStart(2, '0');
+      document.getElementById("minutos").innerText = minutos.toString().padStart(2, '0');
+      document.getElementById("segundos").innerText = segundos.toString().padStart(2, '0');
+    }
+
+    if (distancia < 0) {
+      clearInterval(actualizarContador);
+      if (elemDias) {
+        elemDias.innerText = "00";
+        document.getElementById("horas").innerText = "00";
+        document.getElementById("minutos").innerText = "00";
+        document.getElementById("segundos").innerText = "00";
+      }
+    }
+  }, 1000);
+</script>

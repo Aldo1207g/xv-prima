@@ -1,0 +1,129 @@
+---
+---
+<section class="py-16 px-8 bg-white text-center" id="rsvp">
+  <h2 class="font-serif text-4xl italic mb-4 text-coquette-dark">Confirma tu Asistencia</h2>
+  <p class="mb-8 font-light text-sm text-gray-500">Escribe tu nombre o primer apellido.</p>
+
+  <!-- Buscador -->
+  <div id="search-container" class="max-w-xs mx-auto">
+    <input type="text" id="search-input" placeholder="Ej. Familia Pérez..." class="w-full px-4 py-3 border border-coquette-pink rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-coquette-blue text-center text-gray-700">
+    <button id="search-btn" class="w-full bg-coquette-blue text-coquette-dark px-6 py-3 rounded-full font-medium hover:bg-opacity-80 transition-colors shadow-sm">Buscar Invitación</button>
+  </div>
+
+  <!-- Loading -->
+  <p id="loading-msg" class="hidden mt-6 text-coquette-pink font-medium animate-pulse">Buscando en la lista...</p>
+
+  <!-- Resultados de pases (Oculto al inicio) -->
+  <div id="result-container" class="hidden max-w-xs mx-auto mt-6 p-6 bg-coquette-pink/20 rounded-3xl border border-coquette-pink/50">
+    <h3 id="guest-name" class="font-serif text-2xl italic mb-2 text-coquette-dark"></h3>
+    <p class="mb-6 text-sm text-gray-600">Pases asignados: <span id="guest-passes" class="font-bold"></span></p>
+    
+    <label class="block text-sm mb-2 text-gray-600">¿Cuántos asisten realmente?</label>
+    <select id="passes-select" class="w-full px-4 py-3 border border-coquette-pink rounded-xl mb-6 bg-white focus:outline-none text-center text-gray-700"></select>
+    
+    <button id="confirm-btn" class="w-full bg-coquette-pink text-coquette-dark px-6 py-3 rounded-full font-medium hover:scale-105 transition-transform shadow-md">Confirmar Asistencia</button>
+  </div>
+
+  <!-- Mensaje de Éxito -->
+  <div id="success-container" class="hidden mt-8 p-6 bg-green-50 rounded-3xl">
+    <p class="font-serif text-3xl italic text-green-700 mb-2">¡Gracias!</p>
+    <p class="text-sm text-green-800">Tu confirmación se ha guardado exitosamente.</p>
+  </div>
+</section>
+
+<script>
+  // Aquí está tu enlace de backend
+  const API_URL = "https://script.google.com/macros/s/AKfycbzONvuNqfR7_8lUjkbC-1xGXC2ltmbS6vY-ZiGmVQG80lmi58_2P6AzOyHXpT4DhOZvsw/exec";
+  let currentGuest = null;
+
+  const searchBtn = document.getElementById('search-btn');
+  const searchInput = document.getElementById('search-input');
+  const loadingMsg = document.getElementById('loading-msg');
+  const searchContainer = document.getElementById('search-container');
+  const resultContainer = document.getElementById('result-container');
+  const successContainer = document.getElementById('success-container');
+  const guestNameEl = document.getElementById('guest-name');
+  const guestPassesEl = document.getElementById('guest-passes');
+  const passesSelect = document.getElementById('passes-select');
+  const confirmBtn = document.getElementById('confirm-btn');
+
+  // Lógica para buscar invitado
+  searchBtn.addEventListener('click', async () => {
+    const query = searchInput.value.trim();
+    if (!query) return;
+
+    loadingMsg.classList.remove('hidden');
+    resultContainer.classList.add('hidden');
+
+    try {
+      const res = await fetch(`${API_URL}?search=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      loadingMsg.classList.add('hidden');
+
+      if (data.length > 0) {
+        currentGuest = data[0]; // Selecciona la primera coincidencia
+        guestNameEl.textContent = currentGuest.Nombre_Mostrar;
+        guestPassesEl.textContent = currentGuest.Pases_Asignados;
+        
+        // Armar el dropdown de pases
+        passesSelect.innerHTML = '';
+        const zeroOpt = document.createElement('option');
+        zeroOpt.value = "0";
+        zeroOpt.textContent = "No podré asistir (0)";
+        passesSelect.appendChild(zeroOpt);
+
+        for(let i = 1; i <= currentGuest.Pases_Asignados; i++) {
+          const opt = document.createElement('option');
+          opt.value = i.toString();
+          opt.textContent = `${i} pase${i > 1 ? 's' : ''}`;
+          if(i === currentGuest.Pases_Asignados) opt.selected = true; // Selecciona el máximo por defecto
+          passesSelect.appendChild(opt);
+        }
+
+        resultContainer.classList.remove('hidden');
+        searchContainer.classList.add('hidden');
+      } else {
+        alert("No encontramos tu invitación. Intenta buscando solo tu primer apellido.");
+      }
+    } catch (error) {
+      loadingMsg.classList.add('hidden');
+      alert("Hubo un error de conexión, intenta de nuevo.");
+    }
+  });
+
+  // Lógica para guardar confirmación
+  confirmBtn.addEventListener('click', async () => {
+    if (!currentGuest) return;
+    
+    confirmBtn.textContent = "Guardando...";
+    confirmBtn.disabled = true;
+
+    const pases = parseInt(passesSelect.value);
+    const estatus = pases === 0 ? "Declinado" : "Confirmado";
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          id: currentGuest.ID,
+          pases_confirmados: pases,
+          estatus: estatus
+        })
+      });
+      
+      const result = await res.json();
+      if (result.success) {
+        resultContainer.classList.add('hidden');
+        successContainer.classList.remove('hidden');
+      } else {
+        alert("Hubo un problema al guardar. Intenta de nuevo.");
+        confirmBtn.textContent = "Confirmar Asistencia";
+        confirmBtn.disabled = false;
+      }
+    } catch (error) {
+      alert("Error de conexión al guardar.");
+      confirmBtn.textContent = "Confirmar Asistencia";
+      confirmBtn.disabled = false;
+    }
+  });
+</script>
