@@ -32,7 +32,6 @@
 </section>
 
 <script>
-  // Aquí está tu enlace de backend
   const API_URL = "https://script.google.com/macros/s/AKfycbzONvuNqfR7_8lUjkbC-1xGXC2ltmbS6vY-ZiGmVQG80lmi58_2P6AzOyHXpT4DhOZvsw/exec";
   let currentGuest = null;
 
@@ -49,7 +48,7 @@
 
   // Lógica para buscar invitado
   searchBtn.addEventListener('click', async () => {
-    const query = searchInput.value.trim();
+    const query = searchInput.value.trim().toLowerCase();
     if (!query) return;
 
     loadingMsg.classList.remove('hidden');
@@ -61,7 +60,18 @@
       loadingMsg.classList.add('hidden');
 
       if (data.length > 0) {
-        currentGuest = data[0]; // Selecciona la primera coincidencia
+        
+        // --- EL TRUCO ESTÁ AQUÍ ---
+        // Filtramos para asegurar una coincidencia de palabra completa
+        currentGuest = data.find(guest => {
+          const nombreBD = (guest.Nombre_Busqueda || guest.Nombre_Mostrar || "").toLowerCase();
+          // Separa "ana wrooman" en un arreglo ["ana", "wrooman"]
+          const palabras = nombreBD.split(/\s+/); 
+          // Revisa si la palabra exacta que escribió el usuario existe en el arreglo
+          return palabras.includes(query); 
+        }) || data[0]; // Si por algo falla el filtro, usamos el primer resultado como respaldo
+        // --------------------------
+
         guestNameEl.textContent = currentGuest.Nombre_Mostrar;
         guestPassesEl.textContent = currentGuest.Pases_Asignados;
         
